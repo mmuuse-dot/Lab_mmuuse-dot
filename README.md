@@ -24,4 +24,4 @@ The program manually processes data using loops and conditions without built-in 
 
 ##  Run Python
 
-python3 grade-evaluator.py
+python3 grade_evaluator.py
