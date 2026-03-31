@@ -95,3 +95,36 @@ if formative_percent >= 50 and summative_percent >= 50:
     status = "PASSED"
 else:
     status = "FAILED"
+
+     # E: Resubmission
+    failed = []
+
+    for item in data:
+        if item['group'] == "Formative" and item['score'] < 50:
+            failed.append(item)
+
+    resubmissions = []
+
+    if len(failed) > 0:
+        max_weight = failed[0]['weight']
+
+        for item in failed:
+            if item['weight'] > max_weight:
+                max_weight = item['weight']
+
+        for item in failed:
+            if item['weight'] == max_weight:
+                resubmissions.append(item)
+
+    # F: Output
+    print(f"\nFinal Status: {status}")
+
+    if status == "FAILED" and len(resubmissions) > 0:
+        print("\nResubmit:")
+        for item in resubmissions:
+            print("-", item['assignment'])
+
+
+if __name__ == "__main__":
+    course_data = load_csv_data()
+    evaluate_grades(course_data)
