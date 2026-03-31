@@ -74,52 +74,24 @@ def evaluate_grades(data):
     print(f"GPA: {gpa:.2f}")
 
     # D: Pass/Fail
-    formative_score = 0
-    summative_score = 0
 
-    for item in data:
-        if item['group'] == "Formative":
-            formative_score += (item['score'] * item['weight']) / 100
-        else:
-            summative_score += (item['score'] * item['weight']) / 100
+formative_total = 0
+summative_total = 0
 
-    formative_percent = (formative_score / 60) * 100
-    summative_percent = (summative_score / 40) * 100
-
-    if formative_percent >= 50 and summative_percent >= 50:
-        status = "PASSED"
+for item in data:
+    if item['group'] == "Formative":
+        formative_total += item['score'] * item['weight']
     else:
-        status = "FAILED"
+        summative_total += item['score'] * item['weight']
 
-    # E: Resubmission
-    failed = []
+# Normalize properly
+formative_percent = formative_total / 60
+summative_percent = summative_total / 40
 
-    for item in data:
-        if item['group'] == "Formative" and item['score'] < 50:
-            failed.append(item)
+print(f"Formative %: {formative_percent:.2f}")
+print(f"Summative %: {summative_percent:.2f}")
 
-    resubmissions = []
-
-    if len(failed) > 0:
-        max_weight = failed[0]['weight']
-
-        for item in failed:
-            if item['weight'] > max_weight:
-                max_weight = item['weight']
-
-        for item in failed:
-            if item['weight'] == max_weight:
-                resubmissions.append(item)
-
-    # F: Output
-    print(f"\nFinal Status: {status}")
-
-    if status == "FAILED" and len(resubmissions) > 0:
-        print("\nResubmit:")
-        for item in resubmissions:
-            print("-", item['assignment'])
-
-
-if __name__ == "__main__":
-    course_data = load_csv_data()
-    evaluate_grades(course_data)
+if formative_percent >= 50 and summative_percent >= 50:
+    status = "PASSED"
+else:
+    status = "FAILED"
